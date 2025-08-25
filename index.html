@@ -55,6 +55,18 @@
         input[type="radio"] {
             margin: 0;
         }
+        .env-warning {
+            margin-top: 10px;
+            color: #ff4757;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .param-tip {
+            margin-top: 5px;
+            color: #666;
+            font-size: 12px;
+            font-style: italic;
+        }
         .jump-button {
             width: 100%;
             padding: 15px;
@@ -107,6 +119,9 @@
         <div class="form-group">
             <label for="params">参数：</label>
             <input type="text" id="params" value="channel=1" oninput="updatePreview()">
+            <div class="param-tip">
+                多个参数用&连接，如：channel=1&name=测试&id=123
+            </div>
         </div>
         
         <div class="radio-group">
@@ -124,6 +139,9 @@
                     <input type="radio" id="release" name="env" value="release" checked onchange="updatePreview()">
                     <label for="release">正式</label>
                 </div>
+            </div>
+            <div class="env-warning">
+                开发和体验环境，请在非微信内置浏览器打开链接
             </div>
         </div>
         
@@ -153,7 +171,8 @@
         function buildWeixinUrl(appid, pagePath, params, env) {
             let url = `weixin://dl/business/?appid=${appid}&path=${pagePath}`;
             if (params) {
-                url += `&query=${params}`;
+                const encodedParams = encodeURIComponent(params)
+                url += `&query=${encodedParams}`;
             }
             url += `&env_version=${env}`;
             return url;
