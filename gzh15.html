@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<!-- saved from url=(0036)https://h5.kaboy.net/wxpage/gzh.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, viewport-fit=cover">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+
+    <title>前往微信中</title>
+    <script type="text/javascript" src="./gzh_files/jquery.min.js"></script>
+    <script type="text/javascript">
+      // 根据设计稿的宽度来传参 比如640 750 1125
+      !(function (e) {
+        if (/Android(?:\s+|\/)(\d+\.\d+)?/.test(navigator.userAgent)) {
+          var t = parseFloat(RegExp.$1);
+          if (t > 2.3) {
+            var i = parseInt(window.screen.width) / e;
+            document.write(
+              '<meta name="viewport" content="width=' +
+                e +
+                ",minimum-scale=" +
+                i +
+                ",maximum-scale=" +
+                i +
+                ', target-densitydpi=device-dpi">'
+            );
+          } else {
+            document.write(
+              '<meta name="viewport" content="width=' +
+                e +
+                ',target-densitydpi=device-dpi">'
+            );
+          }
+        } else {
+          document.write(
+            '<meta name="viewport" content="width=' +
+              e +
+              ',user-scalable=no,target-densitydpi=device-dpi,minimal-ui,viewport-fit=cover">'
+          );
+        }
+      })(750);
+    </script><meta name="viewport" content="width=750,user-scalable=no,target-densitydpi=device-dpi,minimal-ui,viewport-fit=cover">
+    <style>
+      html,
+      body {
+        -ms-text-size-adjust: none;
+        -webkit-text-size-adjust: none;
+        text-size-adjust: none;
+        font-size: 10px;
+        margin: 0;
+        background: #fff;
+      }
+      .cont {
+        width: 100%;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .icon {
+        width: 32rem;
+        height: 32rem;
+        margin-top: 23.2rem;
+      }
+      .title {
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 400;
+        font-size: 2.8rem;
+        color: #22242a;
+        line-height: 4rem;
+        text-align: right;
+        font-style: normal;
+      }
+      .btn {
+        width: 67.2rem;
+        height: 9.6rem;
+        background: #4a8aff;
+        border-radius: 4.8rem;
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 600;
+        font-size: 3rem;
+        color: #ffffff;
+        line-height: 9.6rem;
+        text-align: center;
+        font-style: normal;
+        margin-top: 14.4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cont">
+      <img class="icon" src="./gzh_files/icon.png">
+      <span class="title">打开微信添加公众号，了解更多活动！</span>
+
+      <div class="btn" onclick="openWx()">打开微信</div>
+    </div>
+    <script>
+      var pathtype = "testpeage";
+      var muid = "undefined";
+      // var baseUrl = "http://webh5.micup.net";
+      //var version = "trial";
+      var canjump = false;
+      var pageID = getQueryString("ID");
+      var baseUrl = "https://webh5.micouple.cn";
+      var version = 'release';
+      var gzhqr = 15;
+
+	pathtype = "testpeage21";
+      var u = navigator.userAgent,
+        app = navigator.appVersion;
+      var isAndroid = u.indexOf("Android") > -1 || u.indexOf("Linux") > -1; //android终端或者uc浏览器
+      var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+      getdata();
+      function getdata() {
+        pageID = decodeURIComponent(pageID);
+
+        $.ajax({
+          type: "POST",
+          contentType: "application/json; charset=utf-8",
+          url:
+            baseUrl +
+            "/KCH5Port/PortCall?Unid=1&Port=AccountDec&datatype=1&checkcode=0000000000;ios;0;0",
+          data: JSON.stringify({
+            memberID: pageID,
+          }),
+          dataType: "json",
+          success: function (data) {
+            console.log(data);
+            muid = data.memberID;
+
+            canjump = true;
+            var turl =
+                "weixin://dl/business/?appid=wx8d886c6f1cff8d28&path=pages/" +
+                pathtype +
+                "/test&query=mid=" +
+                muid + 
+                "&gzhqr=" + 
+                gzhqr +
+                "&env_version=" +
+                version;
+            turl = encodeURIComponent(turl);
+
+            if (isiOS) {
+              var outer = "knowchat://openApplication?url=" + turl;
+              window.webkit.messageHandlers.webRouter.postMessage(outer);
+            } else {
+              location.href = turl
+            }
+          },
+          dataType: "json",
+        });
+      }
+
+      function openWx() {
+        if (!canjump) return;
+         
+        var turl = "weixin://dl/business/?appid=wx8d886c6f1cff8d28&path=pages/" +
+            pathtype +
+            "/test&query=mid=" +
+            muid +
+            "&gzhqr=" + 
+            gzhqr +
+            "&env_version=" +
+            version;
+
+        console.log(turl);
+        turl = encodeURIComponent(turl);
+        
+        if (isiOS) {          
+          var outer = "knowchat://openApplication?url=" + turl;
+          window.webkit.messageHandlers.webRouter.postMessage(outer);
+        } else {
+          location.href = turl
+        }
+      }
+
+      function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return r[2];
+        return null;
+      }
+    </script>
+  
+
+</body></html>
